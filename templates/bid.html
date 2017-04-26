@@ -1,0 +1,192 @@
+{% extends 'home.html' %}
+
+{% block content %}
+{% if error_message %}
+    <p><strong>{{  error_message }}</strong></p>
+{% endif %}
+    <div class="container">
+		<div class="bg-info">
+		
+				<div class="container">
+				  <div class="row">
+				  
+
+				    <div class="col-sm-8">
+				    		
+				      <div class="panel panel-primary">
+				        <div class="panel-heading "><h2>{{ pro.item_name }}</h2><br>Rs.{{ pro.item_price }}<br>{{ pro.item_desc}}
+				     
+
+					<div id="simple_timer"></div>
+					<script type="text/javascript">		
+                        $(document).ready(function(){
+                            $('#simple_timer').syotimer({
+                                year:"{{ pro.item_date_end.year }}",
+                                month:"{{ pro.item_date_end.month }}",
+                                day: "{{ pro.item_date_end.day }}",
+                                hour: "{{ pro.item_time_end.hour }}",
+                                minute: "{{ pro.item_time_end.minute }}"
+                            });
+                        });
+                    </script>
+
+				        </div>
+				        <div class="panel-body "><img src="{{ pro.item_image.url }}" class="img-rounded" alt="Cinque Terre" width="304" height="236"></div>
+				        <div class="panel-footer top-buffer">
+                        {% if cu_date > cu_datetime %}
+                            <button type="button" class="btn btn-success myBtn">BID</button>
+				        {% else %}
+                            Winner: {{ us }}
+                            <br>Rs.{{ max_bid }}
+                        {% endif %}
+				        	<div class="collapse">
+				    			<form method="POST" enctype="multipart/form-data" action="">{% csrf_token %}
+				 						{{ form.as_table }}
+				    				<button type='submit' class="btn btn-primary">Submit</button>
+				    				<p id="demo"></p>
+				    			</form> 
+
+				    		</div>
+
+
+				        </div> 
+
+				    </div>
+
+				    </div>
+                        <div class='row'>                    
+				    	
+    				        <div class="list-group col-sm-2">
+                                    <h2> <span class="label label-default">Other Bids</span></h2>
+                                    <table class="table-condensed">
+                                        <thead>
+                                          <tr>
+                                            <th>Name</th>
+                                            <th>Bid Amount</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for bid in all_bids %}
+                                        {% if request.user != bid.user %}
+                                            <tr>
+                                            <td>{{ bid.user }}</td>
+                                            <td>Rs.{{ bid.bid_amt}}</td>
+                                            </tr>
+                                          {% endif %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+    				        </div>
+                                    <h2> <span class="label label-default">Your Bids</span></h2>
+                                    <table class="table-condensed">
+                                        <tbody>
+                                        {% for bid in all_bids %}
+                                        {% if request.user = bid.user %}
+                                            <tr>
+                                            <td>Rs.{{ bid.bid_amt}}</td>
+                                            {% if cu_date > cu_datetime %}
+                                            <td><form method="POST" enctype="multipart/form-data" id="delete" action="{% url 'delete_bid' pro.item_id %}" >
+                                                {% csrf_token %} <button type='submit' onClick='swa();' class="btn btn-danger btn-xs"  ><span class='glyphicon glyphicon-remove'></button></span> </form></td>
+                                            {% endif %}    
+                                            </tr>
+                                          {% endif %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+				        </div>
+                    </div>
+
+				    	
+
+				</div>
+        </div>
+    </div>    
+		
+	    
+
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+    <style type="text/css">
+        body{
+            font-family: Tahoma, serif;
+            font-size: 14px;
+            padding: 0 0 100px;
+        }
+
+        /* Customization Style of SyoTimer */
+        .timer{
+            text-align: left;
+
+            margin: 30px auto 0;
+            padding: 0 0 10px;
+
+            border-bottom: 2px solid #80a3ca;
+        }
+        .timer .table-cell{
+            display: inline-block;
+            margin: 0 5px;
+
+            width: 79px;
+            background: url(../demos/images/timer.png) no-repeat 0 0;
+        }
+        .timer .table-cell .tab-val{
+            font-size: 35px;
+            color: #80a3ca;
+
+            height: 81px;
+            line-height: 81px;
+
+            margin: 0 0 5px;
+        }
+        .timer .table-cell .tab-unit{
+            font-family: Arial, serif;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        #simple_timer.timer .table-cell.day,
+        #periodic_timer_days.timer .table-cell.hour{
+            width: 120px;
+            background-image: url(../demos/images/timer_long.png);
+        }
+    </style>
+
+<form><button onClick='swa();'>click</button></form>
+<script>
+function swa(){
+        swal({
+            title: "Are you sure?",
+            text: "You will remove your bid",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55", 
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel plx!",
+            closeOnConfirm: false,
+            closeOnCancel: false, 
+            },  
+        function(isConfirm){
+            if (isConfirm) {
+                swal("Deleted!", "Your imaginary file has been deleted.", "success");   
+                document.getElementById('delete').action="{% url 'delete_bid' pro.item_id %}";
+                return true;
+            }
+            else 
+            {
+                swal("Cancelled", "Your imaginary file is safe :)", "error");   
+            } });
+            } 
+ </script>
+
+{% endblock %}

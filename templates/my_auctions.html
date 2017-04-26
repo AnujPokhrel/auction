@@ -1,0 +1,31 @@
+<!--DOCTYPE html -->
+{% extends 'home.html' %}
+
+	{% block content %}
+	
+		<div class="container">
+			<div class="bg-info">
+
+	{% for product in pro %}
+					<div class="container">
+					  <div class="row">
+					    <div class="col-sm-4">
+					      <div class="panel panel-primary">
+					        <div class="panel-heading">{{ product.item_name }}<br>{{ product.item_price }}</div>
+					        <div class="panel-body"><img src="{{ product.item_image.url }}" class="img-rounded" alt="Cinque Terre" width="304" height="236" ></div>
+					        
+					      
+					      </div>
+					    </div>
+				{% endfor %}
+		    
+
+
+
+
+		</div>	
+
+			</div>
+
+	</div>
+	{% endblock %}
